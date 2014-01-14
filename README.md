@@ -40,81 +40,99 @@ ACTIONS:
 Normal output:
 
 ```
-$ mco rpc network_interfaces get_hash -1
-Discovering hosts using the mc method for 2 second(s) .... 1
+$ mco rpc network_interfaces get_hash -I devmcollective0
 
  * [ ============================================================> ] 1 / 1
 
 
-foo.example.com
-   interfaces: {:bond1=>
-                 {:mac_address=>"00:00:00:01:02:0B",
-                  :slaves=>["eth1"],
-                  :active_interface=>"eth1",
-                  :ip_addresses=>["10.3.25.37"]},
-                :bond0=>
-                 {:mac_address=>"00:00:00:01:02:0A",
-                  :slaves=>["eth0"],
-                  :active_interface=>"eth0",
-                  :ip_addresses=>
-                   ["10.3.1.37", "10.3.1.38", "10.3.1.39", "10.3.1.40", "10.3.1.41"]},
+devmcollective0                           
+   interfaces: {:eth1=>{:member=>"bond0", :mac_address=>"00:00:00:01:02:0A"},
+                :eth2=>
+                 {:member=>"bond1", :active_in_bond=>true, :mac_address=>"00:00:00:01:02:0B"},
+                :eth4=>{:mac_address=>"00:10:18:c0:e8:84"},
+                :eth3=>{:member=>"bond1", :mac_address=>"00:00:00:01:02:0B"},
+                :bond1=>
+                 {:slaves=>["eth2", "eth3"],
+                  :active_interface=>"eth2",
+                  :ip_addresses=>["10.3.24.116"],
+                  :mac_address=>"00:00:00:01:02:0B"},
                 :eth0=>
-                 {:active_in_bond=>true, :member=>"bond0", :mac_address=>"00:00:00:01:02:0A"},
-                :eth1=>
-                 {:active_in_bond=>true, :member=>"bond1", :mac_address=>"00:00:00:01:02:0B"}}
+                 {:member=>"bond0", :active_in_bond=>true, :mac_address=>"00:00:00:01:02:0A"},
+                :bond0=>
+                 {:slaves=>["eth0", "eth1"],
+                  :active_interface=>"eth0",
+                  :ip_addresses=>["10.3.0.116", "10.3.0.117", "10.3.0.118", "10.3.0.119"],
+                  :mac_address=>"00:00:00:01:02:0A"},
+                :eth5=>{:mac_address=>"00:10:18:c0:e8:86"}}
 
 
-Finished processing 1 / 1 hosts in 294.67 ms
+
+Finished processing 1 / 1 hosts in 842.73 ms
 ```
 
 JSON output:
 
 ```
-$ mco rpc network_interfaces get_hash -j -1
+$ mco rpc network_interfaces get_hash -I devmcollective0 -j
 [
   {
     "statusmsg": "OK",
     "agent": "network_interfaces",
     "data": {
       "interfaces": {
-        "eth0": {
-          "active_in_bond": true,
+        "eth1": {
           "member": "bond0",
           "mac_address": "00:00:00:01:02:0A"
         },
-        "bond1": {
-          "ip_addresses": [
-            "10.3.25.37"
-          ],
-          "slaves": [
-            "eth1"
-          ],
-          "active_interface": "eth1",
+        "eth2": {
+          "member": "bond1",
+          "active_in_bond": true,
           "mac_address": "00:00:00:01:02:0B"
         },
-        "eth1": {
-          "active_in_bond": true,
+        "eth4": {
+          "mac_address": "00:10:18:c0:e8:84"
+        },
+        "eth3": {
           "member": "bond1",
           "mac_address": "00:00:00:01:02:0B"
         },
-        "bond0": {
+        "bond1": {
+          "active_interface": "eth2",
           "ip_addresses": [
-            "10.3.1.37",
-            "10.3.1.38",
-            "10.3.1.39",
-            "10.3.1.40",
-            "10.3.1.41"
+            "10.3.24.116"
           ],
+          "mac_address": "00:00:00:01:02:0B",
           "slaves": [
-            "eth0"
-          ],
-          "active_interface": "eth0",
+            "eth2",
+            "eth3"
+          ]
+        },
+        "eth0": {
+          "member": "bond0",
+          "active_in_bond": true,
           "mac_address": "00:00:00:01:02:0A"
+        },
+        "bond0": {
+          "active_interface": "eth0",
+          "ip_addresses": [
+            "10.3.0.116",
+            "10.3.0.117",
+            "10.3.0.118",
+            "10.3.0.119"
+          ],
+          "mac_address": "00:00:00:01:02:0A",
+          "slaves": [
+            "eth0",
+            "eth1"
+          ]
+        },
+        "eth5": {
+          "mac_address": "00:10:18:c0:e8:86"
         }
       }
     },
     "action": "get_hash",
-    "sender": "foo.example.com",
+    "sender": "devmcollective0",
     "statuscode": 0
   }
 ]
