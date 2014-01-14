@@ -13,7 +13,7 @@ module MCollective
 
           # first work out mac address and ip address information
 
-          interface_info = `ip address show dev #{interface}`
+          interface_info = run("ip address show dev #{interface}")
 
           interface = interface.chomp.to_sym
 
@@ -45,8 +45,8 @@ module MCollective
             next unless system("grep 'Slave Interface'        /proc/net/bonding/#{interface} > /dev/null 2>&1")
             next unless system("grep 'Currently Active Slave' /proc/net/bonding/#{interface} > /dev/null 2>&1")
 
-            slaves           = `cat /proc/net/bonding/#{interface} | grep --color=no 'Slave Interface'        | cut -d: -f2 | tr -d '[:blank:]'`
-            active_interface = `cat /proc/net/bonding/#{interface} | grep --color=no 'Currently Active Slave' | cut -d: -f2 | tr -d '[:blank:]'`
+            slaves           = run("cat /proc/net/bonding/#{interface} | grep --color=no 'Slave Interface'        | cut -d: -f2 | tr -d '[:blank:]'")
+            active_interface = run("cat /proc/net/bonding/#{interface} | grep --color=no 'Currently Active Slave' | cut -d: -f2 | tr -d '[:blank:]'")
 
             db[interface][:active_interface] = active_interface.chomp
             db[interface][:slaves]           = slaves.split
@@ -55,13 +55,15 @@ module MCollective
 
             next unless system("grep #{interface} /proc/net/bonding/* > /dev/null 2>&1")
 
-            member = `basename $(grep -H --color=no #{interface} /proc/net/bonding/* | cut -d: -f 1 | uniq)`
+            member = run("basename $(grep -H --color=no #{interface} /proc/net/bonding/* | cut -d: -f 1 | uniq)")
 
             db[interface][:member] = member.chomp
 
-            active_interface = `cat /proc/net/bonding/#{member.chomp} | grep --color=no 'Currently Active Slave' | cut -d: -f2 | tr -d '[:blank:]'`
+            active_interface = run("cat /proc/net/bonding/#{member.chomp} | grep --color=no 'Currently Active Slave' | cut -d: -f2 | tr -d '[:blank:]'")
 
-            db[interface][:active_in_bond] = true if active_interface.chomp == interface.to_s
+            if active_interface.chomp == interface.to_s
+              db[interface][:active_in_bond] = true
+            end
           end
         end
 
