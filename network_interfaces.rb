@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-
 module MCollective
   module Agent
     class Network_interfaces<RPC::Agent
@@ -47,6 +46,7 @@ module MCollective
 
             db[interface][:active_interface] = active_interface.chomp
             db[interface][:slaves]           = slaves.split
+
           when /eth/
 
             next unless system("grep #{interface} /proc/net/bonding/* > /dev/null 2>&1")
@@ -57,9 +57,7 @@ module MCollective
 
             active_interface = `cat /proc/net/bonding/#{member.chomp} | grep --color=no 'Currently Active Slave' | cut -d: -f2 | tr -d '[:blank:]'`
 
-            if active_interface.chomp == interface.to_s
-              db[interface][:active_in_bond] = true
-            end
+            db[interface][:active_in_bond] = true if active_interface.chomp == interface.to_s
           end
         end
 
