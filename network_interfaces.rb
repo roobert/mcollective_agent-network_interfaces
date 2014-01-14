@@ -11,6 +11,8 @@ module MCollective
 
         interfaces.each do |interface|
 
+          # first work out mac address and ip address information
+
           interface_info = `ip address show dev #{interface}`
 
           interface = interface.chomp.to_sym
@@ -29,6 +31,8 @@ module MCollective
               db[interface][:ip_addresses].push line.scan(/    inet (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\//)[0][0]
             end
           end
+
+          # if bonding is enabled then add some useful bonding information
 
           next unless File.directory?("/proc/net/bonding")
 

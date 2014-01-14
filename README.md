@@ -1,7 +1,5 @@
-MCollective Agent for Network Interface Information
----------------------------------------------------
+# MCollective Agent for Network Interface Information
 
-About
-=====
+## About
 
 An agent that returns each network interface on a machine along with the interfaces associated information.
